@@ -1,58 +1,32 @@
-apiVersion: apps/v1
-kind: Deployment
-metadata:
+apiVersion: apps/v1 
+kind: Deployment 
+metadata: 
   name: backend-user
-  labels:
+  labels: 
     app: backend-user
-spec:
+spec: 
   replicas: 2
-  selector:
-    matchLabels:
+  selector: 
+    matchLabels: 
       app: backend-user
-  template:
-    metadata:
-      labels:
-        service: backend-user
+  template: 
+    metadata: 
+      labels: 
         app: backend-user
-    spec:
-      containers:
-      - image: nhatkhanh9a3/api-user
-        name: api-user
-        imagePullPolicy: Always          
-        resources:
-          requests:
-            cpu: "250m"
-          limits:
-            cpu: "1024m" 
-        env:
-        - name: URL
-          valueFrom:
-            configMapKeyRef:
-              name: env-config
-              key: URL 
-        - name: JWT_SECRET
-          valueFrom:
-            configMapKeyRef:
-              name: env-config
-              key: JWT_SECRET
-        - name: POSTGRES_DB
-          valueFrom:
-            configMapKeyRef:
-              name: env-config
-              key: POSTGRES_DB
-        - name: POSTGRES_HOST
-          valueFrom:
-            configMapKeyRef:
-              name: env-config
-              key: POSTGRES_HOST
-        - name: POSTGRES_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: env-secret
-              key: POSTGRES_PASSWORD
-        - name: POSTGRES_USERNAME
-          valueFrom:
-            secretKeyRef:
-              name: env-secret
-              key: POSTGRES_USERNAME
-      restartPolicy: Always
+    spec: 
+      containers: 
+        - name: backend-user
+          image: nhatkhanh9a3/api-user:latest
+          imagePullPolicy: Always
+          resources:
+            requests:            
+              cpu: 250m
+            limits:            
+              cpu: 500m
+          envFrom:
+            - secretRef:
+                name: env-secret
+            - configMapRef:
+                name: env-config
+          ports: 
+            - containerPort: 8080

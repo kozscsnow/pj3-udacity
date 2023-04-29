@@ -1,21 +1,32 @@
 language: node_js
-node_js:
+
+node_js: 
   - 13
 
 services:
   - docker
 
 script:
-  - docker --version # print the version for logging
-  - docker-compose -f docker-compose-build.yaml build --parallel
-  - docker tag reverseproxy nhatkhanh9a3/reverseproxy:latest
-  - docker tag udagram-api-feed nhatkhanh9a3/api-feed:latest
-  - docker tag udagram-api-user nhatkhanh9a3/api-user:latest
-  - docker tag udagram-frontend nhatkhanh9a3/front-end:latest
+  
+  # Build
+  - docker build -t udagram-api-feed:v1 ./udagram-api-feed
+  - docker build -t udagram-api-user:v1 ./udagram-api-user
+  - docker build -t udagram-frontend:v1 ./udagram-frontend
+  - docker build -t reverseproxy:v1 ./udagram-reverseproxy  
 
+  # Tagging
+  - docker tag udagram-api-feed:v1 nhatkhanh9a3/api-feed:v1
+  - docker tag udagram-api-user:v1 nhatkhanh9a3/api-user:v1
+  - docker tag udagram-frontend:v1 nhatkhanh9a3/front-end:v1
+  - docker tag reverseproxy:v1 nhatkhanh9a3/reverseproxy:v1
 after_success:
-  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-  - docker push nhatkhanh9a3/reverseproxy
-  - docker push nhatkhanh9a3/api-user
-  - docker push nhatkhanh9a3/api-feed
-  - docker push nhatkhanh9a3/front-end
+  # Assuming DOCKER_PASSWORD and DOCKER_USERNAME are set in the Travis repository settings
+  # Login Docker  
+  #- docker login -u=emb1605272 -p=EP3E2Mr&&
+  - docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
+  #- echo 'username, password'  $DOCKER_USERNAME $DOCKER_PASSWORD
+  # Pushing 
+  - docker push nhatkhanh9a3/api-feed:v1
+  - docker push nhatkhanh9a3/api-user:v1
+  - docker push nhatkhanh9a3/front-end:v1
+  - docker push nhatkhanh9a3/reverseproxy:v1
