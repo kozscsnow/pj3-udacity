@@ -1,22 +1,22 @@
 apiVersion: apps/v1 
 kind: Deployment 
 metadata: 
-  name: backend-user
+  name: api-user
   labels: 
-    app: backend-user
+    app: api-user
 spec: 
   replicas: 2
   selector: 
     matchLabels: 
-      app: backend-user
+      app: api-user
   template: 
     metadata: 
       labels: 
-        app: backend-user
+        app: api-user
     spec: 
       containers: 
-        - name: backend-user
-          image: nhatkhanh9a3/api-user:latest
+        - name: api-user
+          image: nhatkhanh9a3/api-user:v1
           imagePullPolicy: Always
           resources:
             requests:            
@@ -27,6 +27,6 @@ spec:
             - secretRef:
                 name: env-secret
             - configMapRef:
-                name: env-config
+                name: config-secret
           ports: 
             - containerPort: 8080

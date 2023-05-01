@@ -1,35 +1,81 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: backend-feed
+  name: api-feed
   labels:
-    app: backend-feed
+    app: api-feed
 spec:
   replicas: 2
   selector:
     matchLabels:
-      app: backend-feed
+      app: api-feed
   template:
     metadata:
       labels:
-        app: backend-feed
+        service: api-feed
+        app: api-feed
     spec:
       containers:
-        - name: backend-feed
-          image: nhatkhanh9a3/api-feed:latest
+        - name: api-feed
+          image: nhatkhanh9a3/api-feed:v1
           imagePullPolicy: Always
           resources:
             requests:
-              cpu: 250m
+              cpu: '250m'
             limits:
-              cpu: 500m
-          envFrom:
-            - secretRef:
-                name: env-secret
-            - secretRef:
-                name: aws-secret
-            - configMapRef:
-                name: env-config
-          ports:
-            - containerPort: 8080
+              cpu: '1024m'
+          env:
+            - name: URL
+              valueFrom:
+                configMapKeyRef:
+                  name: env-config
+                  key: URL
+            - name: AWS_BUCKET
+              valueFrom:
+                configMapKeyRef:
+                  name: env-config
+                  key: AWS_BUCKET
+            - name: AWS_PROFILE
+              valueFrom:
+                configMapKeyRef:
+                  name: env-config
+                  key: AWS_PROFILE
+            - name: AWS_REGION
+              valueFrom:
+                configMapKeyRef:
+                  name: env-config
+                  key: AWS_REGION
+            - name: JWT_SECRET
+              valueFrom:
+                configMapKeyRef:
+                  name: env-config
+                  key: JWT_SECRET
+            - name: POSTGRES_DB
+              valueFrom:
+                configMapKeyRef:
+                  name: env-config
+                  key: POSTGRES_DB
+            - name: POSTGRES_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: env-config
+                  key: POSTGRES_HOST
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: env-secret
+                  key: POSTGRES_PASSWORD
+            - name: POSTGRES_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: env-secret
+                  key: POSTGRES_USERNAME
+          volumeMounts:
+            - name: aws-secret
+              mountPath: '/root/.aws/'
+              readOnly: true
       restartPolicy: Always
+      volumes:
+        - name: aws-secret
+          secret:
+            secretName: aws-secret

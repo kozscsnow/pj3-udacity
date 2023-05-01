@@ -1,29 +1,27 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  labels:
-    service: frontend
   name: frontend
+  labels:
+    app: frontend
 spec:
+  replicas: 2
   selector:
     matchLabels:
       app: frontend
-  replicas: 2
   template:
     metadata:
       labels:
-        service: frontend
-        api: external
         app: frontend
-    spec:
+    spec:      
       containers:
-        - image: nhatkhanh9a3/front-end
-          name: frontend
-          imagePullPolicy: Always
-          ports:
-            - containerPort: 80
-          resources:
-            requests:
-              cpu: "250m"
-            limits:
-              cpu: "500m"
+      - name: frontend
+        image: nhatkhanh9a3/front-end:v1
+        imagePullPolicy: Always        
+        resources:
+          limits:
+            cpu: 500m
+          requests:
+            cpu: 200m
+        ports:
+          - containerPort: 80
