@@ -1,0 +1,4 @@
+
+frontend: http://ab65b6a3fe6434700bbb39dec0e5476d-1194543619.us-east-1.elb.amazonaws.com/
+
+backend-feed: http://a92bae7e05de24620b262efaee3ca424-1058005566.us-east-1.elb.amazonaws.com:8080/api/v0/feed
