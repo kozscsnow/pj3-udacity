@@ -3,25 +3,28 @@ kind: Deployment
 metadata:
   name: frontend
   labels:
-    app: frontend
+    service: frontend
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
-      app: frontend
+      service: frontend
+      api: external
   template:
     metadata:
       labels:
-        app: frontend
-    spec:      
+        service: frontend
+        api: external
+    spec:
       containers:
-      - name: frontend
-        image: nhatkhanh9a3/front-end:v1
-        imagePullPolicy: Always        
-        resources:
-          limits:
-            cpu: 500m
-          requests:
-            cpu: 200m
-        ports:
-          - containerPort: 80
+        - image: nhatkhanh9a3/udagram-frontend:v1a
+          name: frontend
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 80
+          resources:
+            limits:
+              cpu: 500m
+            requests:
+              cpu: 200m
+      #restartPolicy: Always
